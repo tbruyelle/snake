@@ -28,16 +28,19 @@ var (
 
 	eng   = glsprite.Engine()
 	scene *sprite.Node
+	texs  []sprite.SubTex
 )
 
 func main() {
 	app.Run(app.Callbacks{
+		Start: loadScene,
 		Draw:  draw,
 		Touch: touch,
 	})
 }
 
 func draw() {
+	// Keep until golang.org/x/mogile/x11.go handle Start callback
 	if scene == nil {
 		loadScene()
 	}
@@ -58,6 +61,12 @@ func draw() {
 }
 
 func touch(t event.Touch) {
+	n := newNode()
+	eng.SetSubTex(n, texs[texBooks])
+	eng.SetTransform(n, f32.Affine{
+		{36, 0, t.Loc.X.Px()},
+		{0, 36, t.Loc.Y.Px()},
+	})
 }
 
 func newNode() *sprite.Node {
@@ -68,7 +77,7 @@ func newNode() *sprite.Node {
 }
 
 func loadScene() {
-	texs := loadTextures()
+	texs = loadTextures()
 	scene = &sprite.Node{}
 	eng.Register(scene)
 	eng.SetTransform(scene, f32.Affine{
