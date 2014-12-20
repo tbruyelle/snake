@@ -7,7 +7,6 @@ package main
 import (
 	"image"
 	"log"
-	"math"
 	"time"
 
 	_ "image/jpeg"
@@ -16,6 +15,7 @@ import (
 	"golang.org/x/mobile/app/debug"
 	"golang.org/x/mobile/event"
 	"golang.org/x/mobile/f32"
+	"golang.org/x/mobile/geom"
 	"golang.org/x/mobile/gl"
 	"golang.org/x/mobile/sprite"
 	"golang.org/x/mobile/sprite/clock"
@@ -29,6 +29,7 @@ var (
 	eng   = glsprite.Engine()
 	scene *sprite.Node
 	texs  []sprite.SubTex
+	snake *Snake
 )
 
 func main() {
@@ -61,12 +62,22 @@ func draw() {
 }
 
 func touch(t event.Touch) {
-	n := newNode()
-	eng.SetSubTex(n, texs[texBooks])
-	eng.SetTransform(n, f32.Affine{
-		{36, 0, t.Loc.X.Px()},
-		{0, 36, t.Loc.Y.Px()},
-	})
+	if t.Type == event.TouchEnd {
+		switch snake.Dir {
+		case Up, Down:
+			if t.Loc.X.Px() < snake.X {
+				snake.Dir = Left
+			} else {
+				snake.Dir = Right
+			}
+		case Left, Right:
+			if t.Loc.Y.Px() < snake.Y {
+				snake.Dir = Up
+			} else {
+				snake.Dir = Down
+			}
+		}
+	}
 }
 
 func newNode() *sprite.Node {
@@ -102,26 +113,41 @@ func loadScene() {
 	})
 
 	n = newNode()
-	n.Arranger = arrangerFunc(func(eng sprite.Engine, n *sprite.Node, t clock.Time) {
-		// TODO: use a tweening library instead of manually arranging.
-		t0 := uint32(t) % 120
-		if t0 < 60 {
-			eng.SetSubTex(n, texs[texGopherR])
-		} else {
-			eng.SetSubTex(n, texs[texGopherL])
-		}
+	snake = NewSnake(float32(geom.Width/2), float32(geom.Height/2))
+	n.Arranger = snake
+}
 
-		u := float32(t0) / 120
-		u = (1 - f32.Cos(u*2*math.Pi)) / 2
+func (s *Snake) Arrange(e sprite.Engine, n *sprite.Node, t clock.Time) {
+	switch s.Dir {
+	case Up:
+		s.Y -= s.Speed
+		eng.SetSubTex(n, texs[texGopherL])
+	case Left:
+		s.X -= s.Speed
+		eng.SetSubTex(n, texs[texGopherL])
+	case Down:
+		s.Y += s.Speed
+		eng.SetSubTex(n, texs[texGopherR])
+	case Right:
+		s.X += s.Speed
+		eng.SetSubTex(n, texs[texGopherR])
+	}
+	if s.X-72 > geom.Width.Px() {
+		s.X = -72
+	}
+	if s.X+72 < 0 {
+		s.X = geom.Width.Px()
+	}
+	if s.Y-72 > geom.Height.Px() {
+		s.Y = -72
+	}
+	if s.Y+72 < 0 {
+		s.Y = geom.Height.Px()
+	}
 
-		tx := 18 + u*48
-		ty := 36 + u*108
-		sx := 36 + u*36
-		sy := 36 + u*36
-		eng.SetTransform(n, f32.Affine{
-			{sx, 0, tx},
-			{0, sy, ty},
-		})
+	eng.SetTransform(n, f32.Affine{
+		{72, 0, s.X},
+		{0, 72, s.Y},
 	})
 }
 
