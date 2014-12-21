@@ -22,14 +22,6 @@ import (
 	"golang.org/x/mobile/sprite/glsprite"
 )
 
-const (
-	// ratio 0.28
-	// 256x164
-	snakew, snakeh = float32(72), float32(46)
-	// 59x64
-	cerisew, ceriseh = float32(16), float32(18)
-)
-
 var (
 	start     = time.Now()
 	lastClock = clock.Time(-1)
@@ -113,8 +105,8 @@ func loadScene() {
 	n = newNode()
 	eng.SetSubTex(n, texs[texCerise])
 	eng.SetTransform(n, f32.Affine{
-		{cerisew, 0, 20},
-		{0, ceriseh, 40},
+		{CherryW, 0, 20},
+		{0, CherryH, 40},
 	})
 
 }
@@ -125,19 +117,19 @@ func (s *Snake) Arrange(e sprite.Engine, n *sprite.Node, t clock.Time) {
 	case Up:
 		s.Y -= s.Speed
 		eng.SetSubTex(n, texs[texSnakeHeadU])
-		w, h = snakeh, snakew
+		w, h = s.H, s.W
 	case Left:
 		s.X -= s.Speed
 		eng.SetSubTex(n, texs[texSnakeHeadL])
-		w, h = snakew, snakeh
+		w, h = s.W, s.H
 	case Down:
 		s.Y += s.Speed
 		eng.SetSubTex(n, texs[texSnakeHeadD])
-		w, h = snakeh, snakew
+		w, h = s.H, s.W
 	case Right:
 		s.X += s.Speed
 		eng.SetSubTex(n, texs[texSnakeHeadR])
-		w, h = snakew, snakeh
+		w, h = s.W, s.H
 	}
 	if s.X > geom.Width.Px() {
 		s.X = -w
