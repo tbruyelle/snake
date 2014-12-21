@@ -139,13 +139,13 @@ func (s *Snake) Arrange(e sprite.Engine, n *sprite.Node, t clock.Time) {
 		eng.SetSubTex(n, texs[texSnakeHeadR])
 		w, h = snakew, snakeh
 	}
-	if s.X-w > geom.Width.Px() {
+	if s.X > geom.Width.Px() {
 		s.X = -w
 	}
 	if s.X+w < 0 {
 		s.X = geom.Width.Px()
 	}
-	if s.Y-h > geom.Height.Px() {
+	if s.Y > geom.Height.Px() {
 		s.Y = -h
 	}
 	if s.Y+h < 0 {
