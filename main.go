@@ -22,6 +22,14 @@ import (
 	"golang.org/x/mobile/sprite/glsprite"
 )
 
+const (
+	// ratio 0.28
+	// 256x164
+	snakew, snakeh = float32(72), float32(46)
+	// 59x64
+	cerisew, ceriseh = float32(16), float32(18)
+)
+
 var (
 	start     = time.Now()
 	lastClock = clock.Time(-1)
@@ -101,10 +109,17 @@ func loadScene() {
 	n = newNode()
 	snake = NewSnake(float32(geom.Width/2), float32(geom.Height/2))
 	n.Arranger = snake
+
+	n = newNode()
+	eng.SetSubTex(n, texs[texCerise])
+	eng.SetTransform(n, f32.Affine{
+		{cerisew, 0, 20},
+		{0, ceriseh, 40},
+	})
+
 }
 
 func (s *Snake) Arrange(e sprite.Engine, n *sprite.Node, t clock.Time) {
-	snakew, snakeh := float32(72), float32(46)
 	var w, h float32
 	switch s.Dir {
 	case Up:
@@ -148,6 +163,7 @@ const (
 	texSnakeHeadL
 	texSnakeHeadU
 	texSnakeHeadD
+	texCerise
 )
 
 func loadTextures() []sprite.SubTex {
@@ -170,6 +186,7 @@ func loadTextures() []sprite.SubTex {
 		texSnakeHeadL: sprite.SubTex{t, image.Rect(256, 0, 512, 164)},
 		texSnakeHeadU: sprite.SubTex{t, image.Rect(0, 164, 164, 420)},
 		texSnakeHeadD: sprite.SubTex{t, image.Rect(164, 164, 328, 420)},
+		texCerise:     sprite.SubTex{t, image.Rect(512, 0, 571, 64)},
 	}
 }
 
