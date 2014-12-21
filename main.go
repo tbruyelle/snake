@@ -9,7 +9,7 @@ import (
 	"log"
 	"time"
 
-	_ "image/jpeg"
+	_ "image/png"
 
 	"golang.org/x/mobile/app"
 	"golang.org/x/mobile/app/debug"
@@ -99,67 +99,59 @@ func loadScene() {
 	var n *sprite.Node
 
 	n = newNode()
-	eng.SetSubTex(n, texs[texBooks])
-	eng.SetTransform(n, f32.Affine{
-		{36, 0, 0},
-		{0, 36, 0},
-	})
-
-	n = newNode()
-	eng.SetSubTex(n, texs[texFire])
-	eng.SetTransform(n, f32.Affine{
-		{72, 0, 144},
-		{0, 72, 144},
-	})
-
-	n = newNode()
 	snake = NewSnake(float32(geom.Width/2), float32(geom.Height/2))
 	n.Arranger = snake
 }
 
 func (s *Snake) Arrange(e sprite.Engine, n *sprite.Node, t clock.Time) {
+	snakew, snakeh := float32(72), float32(46)
+	var w, h float32
 	switch s.Dir {
 	case Up:
 		s.Y -= s.Speed
-		eng.SetSubTex(n, texs[texGopherL])
+		eng.SetSubTex(n, texs[texSnakeHeadU])
+		w, h = snakeh, snakew
 	case Left:
 		s.X -= s.Speed
-		eng.SetSubTex(n, texs[texGopherL])
+		eng.SetSubTex(n, texs[texSnakeHeadL])
+		w, h = snakew, snakeh
 	case Down:
 		s.Y += s.Speed
-		eng.SetSubTex(n, texs[texGopherR])
+		eng.SetSubTex(n, texs[texSnakeHeadD])
+		w, h = snakeh, snakew
 	case Right:
 		s.X += s.Speed
-		eng.SetSubTex(n, texs[texGopherR])
+		eng.SetSubTex(n, texs[texSnakeHeadR])
+		w, h = snakew, snakeh
 	}
-	if s.X-72 > geom.Width.Px() {
-		s.X = -72
+	if s.X-w > geom.Width.Px() {
+		s.X = -w
 	}
-	if s.X+72 < 0 {
+	if s.X+w < 0 {
 		s.X = geom.Width.Px()
 	}
-	if s.Y-72 > geom.Height.Px() {
-		s.Y = -72
+	if s.Y-h > geom.Height.Px() {
+		s.Y = -h
 	}
-	if s.Y+72 < 0 {
+	if s.Y+h < 0 {
 		s.Y = geom.Height.Px()
 	}
 
 	eng.SetTransform(n, f32.Affine{
-		{72, 0, s.X},
-		{0, 72, s.Y},
+		{w, 0, s.X},
+		{0, h, s.Y},
 	})
 }
 
 const (
-	texBooks = iota
-	texFire
-	texGopherR
-	texGopherL
+	texSnakeHeadR = iota
+	texSnakeHeadL
+	texSnakeHeadU
+	texSnakeHeadD
 )
 
 func loadTextures() []sprite.SubTex {
-	f, err := app.Open("waza-gophers.jpeg")
+	f, err := app.Open("tiles.png")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -174,10 +166,10 @@ func loadTextures() []sprite.SubTex {
 	}
 
 	return []sprite.SubTex{
-		texBooks:   sprite.SubTex{t, image.Rect(4, 71, 132, 182)},
-		texFire:    sprite.SubTex{t, image.Rect(330, 56, 440, 155)},
-		texGopherR: sprite.SubTex{t, image.Rect(152, 10, 152+140, 10+90)},
-		texGopherL: sprite.SubTex{t, image.Rect(162, 120, 162+140, 120+90)},
+		texSnakeHeadR: sprite.SubTex{t, image.Rect(0, 0, 256, 164)},
+		texSnakeHeadL: sprite.SubTex{t, image.Rect(256, 0, 512, 164)},
+		texSnakeHeadU: sprite.SubTex{t, image.Rect(0, 164, 164, 420)},
+		texSnakeHeadD: sprite.SubTex{t, image.Rect(164, 164, 328, 420)},
 	}
 }
 
