@@ -9,6 +9,8 @@ import (
 	"log"
 	"time"
 
+	"image/color"
+	idraw "image/draw"
 	_ "image/png"
 
 	"golang.org/x/mobile/app"
@@ -97,6 +99,22 @@ func loadScene() {
 	})
 
 	var n *sprite.Node
+
+	// Background
+	bg := newNode()
+	w, h := int(geom.Width.Px()), int(geom.Height.Px())
+	m := image.NewRGBA(image.Rect(0, 0, w, h))
+	idraw.Draw(m, m.Bounds(), &image.Uniform{color.Transparent}, image.ZP, idraw.Src)
+	t, err := eng.LoadTexture(m)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	texbg := sprite.SubTex{t, image.Rect(0, 0, w, h)}
+	eng.SetSubTex(bg, texbg)
+	eng.SetTransform(bg, f32.Affine{
+		{geom.Width.Px(), 0, 0},
+		{0, geom.Height.Px(), 0},
+	})
 
 	n = newNode()
 	snake = NewSnake(float32(geom.Width/2), float32(geom.Height/2))
