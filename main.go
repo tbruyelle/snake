@@ -119,16 +119,18 @@ func loadScene() {
 		{0, geom.Height.Px(), 0},
 	})
 
-	n = newNode()
-	snake = NewSnake(float32(geom.Width/2), float32(geom.Height/2))
-	n.Arranger = snake
-
+	// Cherry
 	n = newNode()
 	eng.SetSubTex(n, texs[texCerise])
 	eng.SetTransform(n, f32.Affine{
 		{CherryW, 0, 20},
 		{0, CherryH, 40},
 	})
+
+	// Snake
+	n = newNode()
+	snake = NewSnake(float32(geom.Width/2), float32(geom.Height/2))
+	n.Arranger = snake
 
 }
 
