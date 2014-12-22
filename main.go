@@ -106,8 +106,8 @@ func loadScene() {
 	// Background
 	bg := newNode()
 	w, h := int(geom.Width.Px()), int(geom.Height.Px())
-	m := image.NewRGBA(image.Rect(0, 0, w, h))
-	idraw.Draw(m, m.Bounds(), &image.Uniform{color.Transparent}, image.ZP, idraw.Src)
+	m := image.NewRGBA(image.Rect(0, 0, 1, 1))
+	idraw.Draw(m, m.Bounds(), &image.Uniform{color.RGBA{237, 201, 175, 255}}, image.ZP, idraw.Src)
 	t, err := eng.LoadTexture(m)
 	if err != nil {
 		log.Fatalln(err)
