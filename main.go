@@ -90,6 +90,9 @@ func newNode() *sprite.Node {
 }
 
 func loadScene() {
+	gl.Enable(gl.BLEND)
+	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+
 	texs = loadTextures()
 	scene = &sprite.Node{}
 	eng.Register(scene)

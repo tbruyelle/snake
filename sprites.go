@@ -28,7 +28,7 @@ type Snake struct {
 }
 
 func NewSnake(x, y float32) *Snake {
-	s := &Snake{Dir: Left, Size: 1, Speed: 1}
+	s := &Snake{Dir: Left, Size: 1, Speed: 2}
 	s.X = x
 	s.Y = y
 	s.W = SnakeW
