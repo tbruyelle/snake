@@ -1,5 +1,11 @@
 package main
 
+import (
+	"github.com/tbruyelle/fsm"
+	"golang.org/x/mobile/geom"
+	"golang.org/x/mobile/sprite/clock"
+)
+
 type Direction int
 
 const (
@@ -15,13 +21,8 @@ const (
 	CherryW, CherryH = float32(16), float32(18)
 )
 
-type Sprite struct {
-	X, Y float32
-	W, H float32
-}
-
 type Snake struct {
-	Sprite
+	fsm.Object
 	Dir   Direction
 	Size  int
 	Speed float32
@@ -31,20 +32,54 @@ func NewSnake(x, y float32) *Snake {
 	s := &Snake{Dir: Left, Size: 1, Speed: 2}
 	s.X = x
 	s.Y = y
-	s.W = SnakeW
-	s.H = SnakeH
+	s.Width = SnakeW
+	s.Height = SnakeH
+	s.Action = fsm.ActionFunc(snakeMove)
 	return s
 }
 
+func snakeMove(o *fsm.Object, t clock.Time) {
+	switch snake.Dir {
+	case Up:
+		o.Vx = 0
+		o.Vy = -snake.Speed
+		o.Sprite = texs[texSnakeHeadU]
+	case Left:
+		o.Vx = -snake.Speed
+		o.Vy = 0
+		o.Sprite = texs[texSnakeHeadL]
+	case Down:
+		o.Vx = 0
+		o.Vy = snake.Speed
+		o.Sprite = texs[texSnakeHeadD]
+	case Right:
+		o.Vx = snake.Speed
+		o.Vy = 0
+		o.Sprite = texs[texSnakeHeadR]
+	}
+	if snake.X > float32(geom.Width) {
+		snake.X = -snake.Width
+	}
+	if snake.X+snake.Width < 0 {
+		snake.X = float32(geom.Width)
+	}
+	if snake.Y > float32(geom.Height) {
+		snake.Y = -snake.Height
+	}
+	if snake.Y+snake.Height < 0 {
+		snake.Y = float32(geom.Height)
+	}
+}
+
 type Cherry struct {
-	Sprite
+	fsm.Object
 }
 
 func NewCherry(x, y float32) *Cherry {
 	c := &Cherry{}
 	c.X = x
 	c.Y = y
-	c.W = CherryW
-	c.H = CherryH
+	c.Width = CherryW
+	c.Height = CherryH
 	return c
 }

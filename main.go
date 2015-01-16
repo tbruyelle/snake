@@ -121,7 +121,7 @@ func loadScene() {
 
 	n = newNode()
 	snake = NewSnake(float32(geom.Width/2), float32(geom.Height/2))
-	n.Arranger = snake
+	n.Arranger = &snake.Object
 
 	n = newNode()
 	eng.SetSubTex(n, texs[texCerise])
@@ -130,45 +130,6 @@ func loadScene() {
 		{0, CherryH, 40},
 	})
 
-}
-
-func (s *Snake) Arrange(e sprite.Engine, n *sprite.Node, t clock.Time) {
-	var w, h float32
-	switch s.Dir {
-	case Up:
-		s.Y -= s.Speed
-		eng.SetSubTex(n, texs[texSnakeHeadU])
-		w, h = s.H, s.W
-	case Left:
-		s.X -= s.Speed
-		eng.SetSubTex(n, texs[texSnakeHeadL])
-		w, h = s.W, s.H
-	case Down:
-		s.Y += s.Speed
-		eng.SetSubTex(n, texs[texSnakeHeadD])
-		w, h = s.H, s.W
-	case Right:
-		s.X += s.Speed
-		eng.SetSubTex(n, texs[texSnakeHeadR])
-		w, h = s.W, s.H
-	}
-	if s.X > geom.Width.Px() {
-		s.X = -w
-	}
-	if s.X+w < 0 {
-		s.X = geom.Width.Px()
-	}
-	if s.Y > geom.Height.Px() {
-		s.Y = -h
-	}
-	if s.Y+h < 0 {
-		s.Y = geom.Height.Px()
-	}
-
-	eng.SetTransform(n, f32.Affine{
-		{w, 0, s.X},
-		{0, h, s.Y},
-	})
 }
 
 const (
