@@ -1,11 +1,6 @@
 package main
 
-import (
-	"github.com/tbruyelle/fsm"
-	"golang.org/x/mobile/geom"
-	"golang.org/x/mobile/sprite/clock"
-	"math"
-)
+import "github.com/tbruyelle/fsm"
 
 type Direction int
 
@@ -38,47 +33,6 @@ func NewSnake(x, y float32) *Snake {
 	s.Sprite = texs[texSnakeHeadL]
 	s.Action = fsm.ActionFunc(snakeMove)
 	return s
-}
-
-func snakeMove(o *fsm.Object, t clock.Time) {
-	switch snake.Dir {
-	case Up:
-		o.Vx = 0
-		o.Vy = -snake.Speed
-		o.Rx = o.X + o.Width/2
-		o.Ry = o.Y + o.Height/2
-		o.Angle = math.Pi / 2
-	case Left:
-		o.Vx = -snake.Speed
-		o.Vy = 0
-		o.Rx = 0
-		o.Ry = 0
-		o.Angle = 0
-	case Down:
-		o.Vx = 0
-		o.Vy = snake.Speed
-		o.Rx = o.X + o.Width/2
-		o.Ry = o.Y + o.Height/2
-		o.Angle = -math.Pi / 2
-	case Right:
-		o.Vx = snake.Speed
-		o.Vy = 0
-		o.Rx = o.X + o.Width/2
-		o.Ry = o.Y + o.Height/2
-		o.Angle = -math.Pi
-	}
-	if snake.X > float32(geom.Width) {
-		snake.X = -snake.Width
-	}
-	if snake.X+snake.Width < 0 {
-		snake.X = float32(geom.Width)
-	}
-	if snake.Y > float32(geom.Height) {
-		snake.Y = -snake.Height
-	}
-	if snake.Y+snake.Height < 0 {
-		snake.Y = float32(geom.Height)
-	}
 }
 
 type Cherry struct {

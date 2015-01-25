@@ -68,15 +68,23 @@ func touch(t event.Touch) {
 		switch snake.Dir {
 		case Up, Down:
 			if t.Loc.X.Px() < snake.X {
-				snake.Dir = Left
+				snake.Action = &snakeTurn{
+					dir: Left,
+				}
 			} else {
-				snake.Dir = Right
+				snake.Action = &snakeTurn{
+					dir: Right,
+				}
 			}
 		case Left, Right:
 			if t.Loc.Y.Px() < snake.Y {
-				snake.Dir = Up
+				snake.Action = &snakeTurn{
+					dir: Up,
+				}
 			} else {
-				snake.Dir = Down
+				snake.Action = &snakeTurn{
+					dir: Down,
+				}
 			}
 		}
 	}
