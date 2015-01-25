@@ -5,12 +5,12 @@
 package main
 
 import (
+	"github.com/tbruyelle/fsm"
 	"image"
 	"log"
 	"time"
 
 	"image/color"
-	idraw "image/draw"
 	_ "image/png"
 
 	"golang.org/x/mobile/app"
@@ -114,13 +114,10 @@ func loadScene() {
 	// Background
 	bg := newNode()
 	w, h := int(geom.Width.Px()), int(geom.Height.Px())
-	m := image.NewRGBA(image.Rect(0, 0, w, h))
-	idraw.Draw(m, m.Bounds(), &image.Uniform{color.Transparent}, image.ZP, idraw.Src)
-	t, err := eng.LoadTexture(m)
+	texbg, err := fsm.LoadColorTexture(eng, color.RGBA{237, 201, 175, 255}, w, h)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
-	texbg := sprite.SubTex{t, image.Rect(0, 0, w, h)}
 	eng.SetSubTex(bg, texbg)
 	eng.SetTransform(bg, f32.Affine{
 		{geom.Width.Px(), 0, 0},
