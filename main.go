@@ -138,10 +138,7 @@ func loadScene() {
 }
 
 const (
-	texSnakeHeadR = iota
-	texSnakeHeadL
-	texSnakeHeadU
-	texSnakeHeadD
+	texSnakeHead = iota
 	texCerise
 )
 
@@ -161,11 +158,8 @@ func loadTextures() []sprite.SubTex {
 	}
 
 	return []sprite.SubTex{
-		texSnakeHeadR: sprite.SubTex{t, image.Rect(0, 0, 256, 164)},
-		texSnakeHeadL: sprite.SubTex{t, image.Rect(256, 0, 512, 164)},
-		texSnakeHeadU: sprite.SubTex{t, image.Rect(0, 164, 164, 420)},
-		texSnakeHeadD: sprite.SubTex{t, image.Rect(164, 164, 328, 420)},
-		texCerise:     sprite.SubTex{t, image.Rect(512, 0, 571, 64)},
+		texSnakeHead: sprite.SubTex{t, image.Rect(0, 0, 280, 184)},
+		texCerise:    sprite.SubTex{t, image.Rect(0, 184, 80, 184+80)},
 	}
 }
 

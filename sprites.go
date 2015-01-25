@@ -11,10 +11,10 @@ const (
 	Right Direction = -2
 
 	// ratio 0.28
-	// 256x164
-	SnakeW, SnakeH = float32(72), float32(46)
-	// 59x64
-	CherryW, CherryH = float32(16), float32(18)
+	// 280x184
+	SnakeW, SnakeH = float32(78.4), float32(51.52)
+	// 80x80
+	CherryW, CherryH = float32(22.4), float32(22.4)
 )
 
 type Snake struct {
@@ -30,7 +30,7 @@ func NewSnake(x, y float32) *Snake {
 	s.Y = y
 	s.Width = SnakeW
 	s.Height = SnakeH
-	s.Sprite = texs[texSnakeHeadL]
+	s.Sprite = texs[texSnakeHead]
 	s.Action = fsm.ActionFunc(snakeMove)
 	return s
 }
