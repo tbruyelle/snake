@@ -5,12 +5,12 @@
 package main
 
 import (
+	"github.com/tbruyelle/fsm"
 	"image"
 	"log"
 	"time"
 
 	"image/color"
-	idraw "image/draw"
 	_ "image/png"
 
 	"golang.org/x/mobile/app"
@@ -68,15 +68,23 @@ func touch(t event.Touch) {
 		switch snake.Dir {
 		case Up, Down:
 			if t.Loc.X.Px() < snake.X {
-				snake.Dir = Left
+				snake.Action = &snakeTurn{
+					dir: Left,
+				}
 			} else {
-				snake.Dir = Right
+				snake.Action = &snakeTurn{
+					dir: Right,
+				}
 			}
 		case Left, Right:
 			if t.Loc.Y.Px() < snake.Y {
-				snake.Dir = Up
+				snake.Action = &snakeTurn{
+					dir: Up,
+				}
 			} else {
-				snake.Dir = Down
+				snake.Action = &snakeTurn{
+					dir: Down,
+				}
 			}
 		}
 	}
@@ -106,20 +114,20 @@ func loadScene() {
 	// Background
 	bg := newNode()
 	w, h := int(geom.Width.Px()), int(geom.Height.Px())
-	m := image.NewRGBA(image.Rect(0, 0, 1, 1))
-	idraw.Draw(m, m.Bounds(), &image.Uniform{color.RGBA{237, 201, 175, 255}}, image.ZP, idraw.Src)
-	t, err := eng.LoadTexture(m)
+	texbg, err := fsm.LoadColorTexture(eng, color.RGBA{237, 201, 175, 255}, w, h)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
-	texbg := sprite.SubTex{t, image.Rect(0, 0, w, h)}
 	eng.SetSubTex(bg, texbg)
 	eng.SetTransform(bg, f32.Affine{
 		{geom.Width.Px(), 0, 0},
 		{0, geom.Height.Px(), 0},
 	})
 
-	// Cherry
+	n = newNode()
+	snake = NewSnake(float32(geom.Width/2), float32(geom.Height/2))
+	n.Arranger = &snake.Object
+
 	n = newNode()
 	eng.SetSubTex(n, texs[texCerise])
 	eng.SetTransform(n, f32.Affine{
@@ -134,50 +142,8 @@ func loadScene() {
 
 }
 
-func (s *Snake) Arrange(e sprite.Engine, n *sprite.Node, t clock.Time) {
-	var w, h float32
-	switch s.Dir {
-	case Up:
-		s.Y -= s.Speed
-		eng.SetSubTex(n, texs[texSnakeHeadU])
-		w, h = s.H, s.W
-	case Left:
-		s.X -= s.Speed
-		eng.SetSubTex(n, texs[texSnakeHeadL])
-		w, h = s.W, s.H
-	case Down:
-		s.Y += s.Speed
-		eng.SetSubTex(n, texs[texSnakeHeadD])
-		w, h = s.H, s.W
-	case Right:
-		s.X += s.Speed
-		eng.SetSubTex(n, texs[texSnakeHeadR])
-		w, h = s.W, s.H
-	}
-	if s.X > geom.Width.Px() {
-		s.X = -w
-	}
-	if s.X+w < 0 {
-		s.X = geom.Width.Px()
-	}
-	if s.Y > geom.Height.Px() {
-		s.Y = -h
-	}
-	if s.Y+h < 0 {
-		s.Y = geom.Height.Px()
-	}
-
-	eng.SetTransform(n, f32.Affine{
-		{w, 0, s.X},
-		{0, h, s.Y},
-	})
-}
-
 const (
-	texSnakeHeadR = iota
-	texSnakeHeadL
-	texSnakeHeadU
-	texSnakeHeadD
+	texSnakeHead = iota
 	texCerise
 )
 
@@ -197,11 +163,8 @@ func loadTextures() []sprite.SubTex {
 	}
 
 	return []sprite.SubTex{
-		texSnakeHeadR: sprite.SubTex{t, image.Rect(0, 0, 256, 164)},
-		texSnakeHeadL: sprite.SubTex{t, image.Rect(256, 0, 512, 164)},
-		texSnakeHeadU: sprite.SubTex{t, image.Rect(0, 164, 164, 420)},
-		texSnakeHeadD: sprite.SubTex{t, image.Rect(164, 164, 328, 420)},
-		texCerise:     sprite.SubTex{t, image.Rect(512, 0, 571, 64)},
+		texSnakeHead: sprite.SubTex{t, image.Rect(0, 0, 280, 184)},
+		texCerise:    sprite.SubTex{t, image.Rect(0, 184, 80, 184+80)},
 	}
 }
 
