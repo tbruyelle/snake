@@ -27,8 +27,9 @@ import (
 
 type Objs []*fsm.Object
 
-func (a Objs) Remove(i int) {
+func (a Objs) Remove(i int) Objs {
 	a[i], a[len(a)-1], a = a[len(a)-1], nil, a[:len(a)-1]
+	return a
 }
 
 var (
@@ -67,6 +68,18 @@ func draw() {
 
 	gl.ClearColor(1, 1, 1, 1)
 	gl.Clear(gl.COLOR_BUFFER_BIT)
+
+	// test collisions
+	for i, o := range objs {
+		if snake.Collide(o) {
+			o.Dead = true
+			snake.Speed++
+			snake.Size++
+			objs = objs.Remove(i)
+			break // one collision per loop?
+		}
+	}
+
 	eng.Render(scene, now)
 	debug.DrawFPS()
 }
@@ -128,10 +141,13 @@ func loadScene() {
 	bg.Sprite = texbg
 	bg.Node(scene, eng)
 
+	objs = make(Objs, 0)
+
 	// a cherry
 	c := &fsm.Object{X: 20, Y: 40, Width: CherryW, Height: CherryH}
 	c.Sprite = texs[texCerise]
 	c.Node(scene, eng)
+	objs = append(objs, c)
 
 	// Snake
 	snake = NewSnake(float32(geom.Width/2), float32(geom.Height/2))
