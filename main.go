@@ -5,10 +5,11 @@
 package main
 
 import (
-	"github.com/tbruyelle/fsm"
 	"image"
 	"log"
 	"time"
+
+	"github.com/tbruyelle/fsm"
 
 	"image/color"
 	_ "image/png"
@@ -24,6 +25,12 @@ import (
 	"golang.org/x/mobile/sprite/glsprite"
 )
 
+type Objs []*fsm.Object
+
+func (a Objs) Remove(i int) {
+	a[i], a[len(a)-1], a = a[len(a)-1], nil, a[:len(a)-1]
+}
+
 var (
 	start     = time.Now()
 	lastClock = clock.Time(-1)
@@ -32,6 +39,7 @@ var (
 	scene *sprite.Node
 	texs  []sprite.SubTex
 	snake *Snake
+	objs  Objs
 )
 
 func main() {
@@ -109,37 +117,25 @@ func loadScene() {
 		{0, 1, 0},
 	})
 
-	var n *sprite.Node
-
 	// Background
-	bg := newNode()
-	w, h := int(geom.Width.Px()), int(geom.Height.Px())
+	bg := &fsm.Object{Width: float32(geom.Width), Height: float32(geom.Height)}
+	w, h := int(geom.Width), int(geom.Height)
+
 	texbg, err := fsm.LoadColorTexture(eng, color.RGBA{237, 201, 175, 255}, w, h)
 	if err != nil {
 		log.Fatal(err)
 	}
-	eng.SetSubTex(bg, texbg)
-	eng.SetTransform(bg, f32.Affine{
-		{geom.Width.Px(), 0, 0},
-		{0, geom.Height.Px(), 0},
-	})
+	bg.Sprite = texbg
+	bg.Node(scene, eng)
 
-	n = newNode()
-	snake = NewSnake(float32(geom.Width/2), float32(geom.Height/2))
-	n.Arranger = &snake.Object
-
-	n = newNode()
-	eng.SetSubTex(n, texs[texCerise])
-	eng.SetTransform(n, f32.Affine{
-		{CherryW, 0, 20},
-		{0, CherryH, 40},
-	})
+	// a cherry
+	c := &fsm.Object{X: 20, Y: 40, Width: CherryW, Height: CherryH}
+	c.Sprite = texs[texCerise]
+	c.Node(scene, eng)
 
 	// Snake
-	n = newNode()
 	snake = NewSnake(float32(geom.Width/2), float32(geom.Height/2))
-	n.Arranger = snake
-
+	snake.Node(scene, eng)
 }
 
 const (
@@ -167,7 +163,3 @@ func loadTextures() []sprite.SubTex {
 		texCerise:    sprite.SubTex{t, image.Rect(0, 184, 80, 184+80)},
 	}
 }
-
-type arrangerFunc func(e sprite.Engine, n *sprite.Node, t clock.Time)
-
-func (a arrangerFunc) Arrange(e sprite.Engine, n *sprite.Node, t clock.Time) { a(e, n, t) }
