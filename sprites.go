@@ -13,6 +13,8 @@ const (
 	// ratio 0.28
 	// 280x184
 	SnakeW, SnakeH = float32(78.4), float32(51.52)
+	// 138x138
+	QueueW, QueueH = float32(38.6), float32(38.6)
 	// 80x80
 	CherryW, CherryH = float32(22.4), float32(22.4)
 	// 88x80
@@ -26,8 +28,13 @@ type Snake struct {
 	Speed float32
 }
 
+type Queue struct {
+	fsm.Object
+	pos float32
+}
+
 func NewSnake(x, y float32) *Snake {
-	s := &Snake{Dir: Left, Size: 1, Speed: 2}
+	s := &Snake{Dir: Left, Size: 0, Speed: 2}
 	s.X = x
 	s.Y = y
 	s.Width = SnakeW
@@ -36,6 +43,19 @@ func NewSnake(x, y float32) *Snake {
 	s.Action = fsm.ActionFunc(snakeMove)
 	s.Node(scene, eng)
 	return s
+}
+
+func (s *Snake) Inc() {
+	q := &Queue{
+		pos: float32(s.Size),
+	}
+	q.Sprite = texs[texSnakeQueue]
+	q.Width = QueueW
+	q.Height = QueueH
+	q.Data = q
+	q.Action = fsm.ActionFunc(queueMove)
+	q.Node(scene, eng)
+	s.Size++
 }
 
 type Cherry struct {

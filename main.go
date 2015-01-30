@@ -74,7 +74,7 @@ func draw() {
 		if snake.Collide(o) {
 			o.Dead = true
 			snake.Speed++
-			snake.Size++
+			snake.Inc()
 			objs = objs.Remove(i)
 			break // one collision per loop?
 		}

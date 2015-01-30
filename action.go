@@ -88,3 +88,15 @@ func (a *snakeTurn) Do(o *fsm.Object, t clock.Time) {
 	}
 
 }
+
+func queueMove(o *fsm.Object, t clock.Time) {
+	q := o.Data.(*Queue)
+	o.X = snake.X + SnakeW + (q.pos * QueueW)
+	o.Y = snake.Y
+
+	o.Vx = snake.Vx
+	o.Vy = snake.Vy
+	o.Angle = snake.Angle
+	o.Rx = snake.Rx
+	o.Ry = snake.Ry
+}
