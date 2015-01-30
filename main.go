@@ -144,19 +144,18 @@ func loadScene() {
 	objs = make(Objs, 0)
 
 	// a cherry
-	c := &fsm.Object{X: 20, Y: 40, Width: CherryW, Height: CherryH}
-	c.Sprite = texs[texCerise]
-	c.Node(scene, eng)
-	objs = append(objs, c)
+	NewCherry(20, 40)
+	NewApple(100, 40)
 
 	// Snake
 	snake = NewSnake(float32(geom.Width/2), float32(geom.Height/2))
-	snake.Node(scene, eng)
 }
 
 const (
 	texSnakeHead = iota
-	texCerise
+	texSnakeQueue
+	texCherry
+	texApple
 )
 
 func loadTextures() []sprite.SubTex {
@@ -175,7 +174,9 @@ func loadTextures() []sprite.SubTex {
 	}
 
 	return []sprite.SubTex{
-		texSnakeHead: sprite.SubTex{t, image.Rect(0, 0, 280, 184)},
-		texCerise:    sprite.SubTex{t, image.Rect(0, 184, 80, 184+80)},
+		texSnakeHead:  sprite.SubTex{t, image.Rect(0, 0, 280, 184)},
+		texSnakeQueue: sprite.SubTex{t, image.Rect(278, 0, 278+146, 141)},
+		texCherry:     sprite.SubTex{t, image.Rect(0, 184, 80, 184+80)},
+		texApple:      sprite.SubTex{t, image.Rect(0, 263, 88, 263+80)},
 	}
 }

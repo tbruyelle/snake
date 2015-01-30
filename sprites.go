@@ -15,6 +15,8 @@ const (
 	SnakeW, SnakeH = float32(78.4), float32(51.52)
 	// 80x80
 	CherryW, CherryH = float32(22.4), float32(22.4)
+	// 88x80
+	AppleW, AppleH = float32(24.6), float32(22.4)
 )
 
 type Snake struct {
@@ -32,11 +34,28 @@ func NewSnake(x, y float32) *Snake {
 	s.Height = SnakeH
 	s.Sprite = texs[texSnakeHead]
 	s.Action = fsm.ActionFunc(snakeMove)
+	s.Node(scene, eng)
 	return s
 }
 
 type Cherry struct {
 	fsm.Object
+}
+
+type Apple struct {
+	fsm.Object
+}
+
+func NewApple(x, y float32) *Apple {
+	c := &Apple{}
+	c.X = x
+	c.Y = y
+	c.Width = AppleW
+	c.Height = AppleH
+	c.Sprite = texs[texApple]
+	c.Node(scene, eng)
+	objs = append(objs, &c.Object)
+	return c
 }
 
 func NewCherry(x, y float32) *Cherry {
@@ -45,5 +64,8 @@ func NewCherry(x, y float32) *Cherry {
 	c.Y = y
 	c.Width = CherryW
 	c.Height = CherryH
+	c.Sprite = texs[texCherry]
+	c.Node(scene, eng)
+	objs = append(objs, &c.Object)
 	return c
 }
