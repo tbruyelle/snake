@@ -17,8 +17,8 @@ const (
 	QueueW, QueueH = float32(38.6), float32(38.6)
 	// 80x80
 	CherryW, CherryH = float32(22.4), float32(22.4)
-	// 88x80
-	AppleW, AppleH = float32(24.6), float32(22.4)
+	// 102x88
+	AppleW, AppleH = float32(28.6), float32(24.6)
 )
 
 type Snake struct {
