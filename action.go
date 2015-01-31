@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"math"
 
+	"github.com/huin/chunkymonkey/perlin"
 	"github.com/tbruyelle/fsm"
 	"golang.org/x/mobile/geom"
 	"golang.org/x/mobile/sprite/clock"
@@ -128,6 +130,23 @@ func tongueOut(o *fsm.Object, t clock.Time) {
 		o.Time = 0
 		o.X = o.X + o.Tx
 		o.Tx = 0
+		o.Action = &tongueShake{}
+	}
+}
+
+type tongueShake struct {
+	perlin *perlin.PerlinNoise
+}
+
+func (a *tongueShake) Do(o *fsm.Object, t clock.Time) {
+	if o.Time == 0 {
+		o.Time = t
+		a.perlin = perlin.NewPerlinNoise(0)
+	}
+	f := a.perlin.At2d(0, 0)
+	fmt.Println("shake ", f)
+	if t > o.Time+40 {
+		o.Time = 0
 		o.Action = fsm.ActionFunc(tongueIn)
 	}
 }
