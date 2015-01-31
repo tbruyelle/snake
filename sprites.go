@@ -9,17 +9,17 @@ const (
 	Down  Direction = -1
 	Left  Direction = 2
 	Right Direction = -2
-
-	// ratio 0.28
-	// 280x184
-	SnakeW, SnakeH = float32(78.4), float32(51.52)
-	// 138x138
-	QueueW, QueueH = float32(38.6), float32(38.6)
-	// 80x80
-	CherryW, CherryH = float32(22.4), float32(22.4)
-	// 102x88
-	AppleW, AppleH = float32(28.6), float32(24.6)
 )
+
+var (
+	ratio          float32
+	snakeH, snakeW float32
+)
+
+func init() {
+	ratio = 0.4
+	snakeW, snakeH = SnakeW*ratio, SnakeH*ratio
+}
 
 type Snake struct {
 	fsm.Object
@@ -37,8 +37,8 @@ func NewSnake(x, y float32) *Snake {
 	s := &Snake{Dir: Left, Size: 0, Speed: 2}
 	s.X = x
 	s.Y = y
-	s.Width = SnakeW
-	s.Height = SnakeH
+	s.Width = snakeW
+	s.Height = snakeH
 	s.Sprite = texs[texSnakeHead]
 	s.Action = fsm.ActionFunc(snakeMove)
 	s.Node(scene, eng)
@@ -50,8 +50,8 @@ func (s *Snake) Inc() {
 		pos: float32(s.Size),
 	}
 	q.Sprite = texs[texSnakeQueue]
-	q.Width = QueueW
-	q.Height = QueueH
+	q.Width = QueueW * ratio
+	q.Height = QueueH * ratio
 	q.Data = q
 	q.Action = fsm.ActionFunc(queueMove)
 	q.Node(scene, eng)
@@ -70,8 +70,8 @@ func NewApple(x, y float32) *Apple {
 	c := &Apple{}
 	c.X = x
 	c.Y = y
-	c.Width = AppleW
-	c.Height = AppleH
+	c.Width = AppleW * ratio
+	c.Height = AppleH * ratio
 	c.Sprite = texs[texApple]
 	c.Node(scene, eng)
 	objs = append(objs, &c.Object)
@@ -82,8 +82,8 @@ func NewCherry(x, y float32) *Cherry {
 	c := &Cherry{}
 	c.X = x
 	c.Y = y
-	c.Width = CherryW
-	c.Height = CherryH
+	c.Width = CherryW * ratio
+	c.Height = CherryH * ratio
 	c.Sprite = texs[texCherry]
 	c.Node(scene, eng)
 	objs = append(objs, &c.Object)
