@@ -17,8 +17,8 @@ func snakeMove(o *fsm.Object, t clock.Time) {
 	case Up:
 		o.Vx = 0
 		o.Vy = -snake.Speed
-		o.Rx = o.X + o.Width/2
-		o.Ry = o.Y + o.Height/2
+		o.Rx = o.X + snake.body.Width/2
+		o.Ry = o.Y + snake.body.Height/2
 		o.Angle = halfPi
 	case Left:
 		o.Vx = -snake.Speed
@@ -29,26 +29,26 @@ func snakeMove(o *fsm.Object, t clock.Time) {
 	case Down:
 		o.Vx = 0
 		o.Vy = snake.Speed
-		o.Rx = o.X + o.Width/2
-		o.Ry = o.Y + o.Height/2
+		o.Rx = o.X + snake.body.Width/2
+		o.Ry = o.Y + snake.body.Height/2
 		o.Angle = -halfPi
 	case Right:
 		o.Vx = snake.Speed
 		o.Vy = 0
-		o.Rx = o.X + o.Width/2
-		o.Ry = o.Y + o.Height/2
+		o.Rx = o.X + snake.body.Width/2
+		o.Ry = o.Y + snake.body.Height/2
 		o.Angle = -math.Pi
 	}
 	if snake.X > float32(geom.Width) {
-		snake.X = -snake.Width
+		snake.X = -snake.body.Width
 	}
-	if snake.X+snake.Width < 0 {
+	if snake.X+snake.body.Width < 0 {
 		snake.X = float32(geom.Width)
 	}
 	if snake.Y > float32(geom.Height) {
-		snake.Y = -snake.Height
+		snake.Y = -snake.body.Height
 	}
-	if snake.Y+snake.Height < 0 {
+	if snake.Y+snake.body.Height < 0 {
 		snake.Y = float32(geom.Height)
 	}
 }
@@ -63,8 +63,8 @@ func (a *snakeTurn) Do(o *fsm.Object, t clock.Time) {
 	if o.Time == 0 {
 		o.Time = t
 		o.Vx, o.Vy = 0, 0
-		o.Rx = o.X + o.Width/2
-		o.Ry = o.Y + o.Height/2
+		o.Rx = o.X + snake.body.Width/2
+		o.Ry = o.Y + snake.body.Height/2
 		switch {
 		case snake.Dir == Up && a.dir == Left,
 			snake.Dir == Left && a.dir == Down,
