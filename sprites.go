@@ -17,7 +17,7 @@ var (
 )
 
 func init() {
-	ratio = 0.4
+	ratio = 0.7
 	snakeW, snakeH = SnakeW*ratio, SnakeH*ratio
 }
 
@@ -43,6 +43,13 @@ func NewSnake(x, y float32) *Snake {
 	s.Height = 1
 	s.Action = fsm.ActionFunc(snakeMove)
 	n := s.Node(scene, eng)
+	// the tongue
+	t := &fsm.Object{X: 25 * ratio, Y: 114 * ratio, Width: TongueW * ratio, Height: TongueH * ratio}
+	t.Sprite = texs[texTongue]
+	t.Node(n, eng)
+	t.Action = fsm.ActionFunc(tongueIn)
+	s.tongue = t
+	// the body
 	b := &fsm.Object{X: 0, Y: 0, Width: snakeW, Height: snakeH}
 	b.Sprite = texs[texSnakeHead]
 	b.Node(n, eng)

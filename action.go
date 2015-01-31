@@ -100,3 +100,34 @@ func queueMove(o *fsm.Object, t clock.Time) {
 	o.Rx = snake.Rx
 	o.Ry = snake.Ry
 }
+
+func tongueIn(o *fsm.Object, t clock.Time) {
+	if o.Time == 0 {
+		o.Time = t
+	}
+	f := clock.EaseOut(o.Time, o.Time+30, t)
+	o.Tx = o.Width * f
+	if f == 1 {
+		o.Time = 0
+		o.X = o.X + o.Tx
+		o.Tx = 0
+		o.Action = &fsm.Wait{
+			Until: 60,
+			Next:  fsm.ActionFunc(tongueOut),
+		}
+	}
+}
+
+func tongueOut(o *fsm.Object, t clock.Time) {
+	if o.Time == 0 {
+		o.Time = t
+	}
+	f := clock.EaseIn(o.Time, o.Time+20, t)
+	o.Tx = -o.Width * f
+	if f == 1 {
+		o.Time = 0
+		o.X = o.X + o.Tx
+		o.Tx = 0
+		o.Action = fsm.ActionFunc(tongueIn)
+	}
+}
