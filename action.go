@@ -179,3 +179,33 @@ func pupilleLookRight(o *fsm.Object, t clock.Time) {
 		}
 	}
 }
+
+const BounceFactor = 0.08
+
+func bodyBounceOut(o *fsm.Object, t clock.Time) {
+	if o.Time == 0 {
+		o.Time = t
+		o.Sx, o.Sy = o.X+o.Width/2, o.Y+o.Height/2
+		o.ScaleY = 1
+	}
+	f := clock.Linear(o.Time, o.Time+30, t)
+	o.ScaleX = 1 + BounceFactor*f
+	if f == 1 {
+		o.Time = 0
+		o.Action = fsm.ActionFunc(bodyBounceIn)
+	}
+}
+
+func bodyBounceIn(o *fsm.Object, t clock.Time) {
+	if o.Time == 0 {
+		o.Time = t
+		o.Sx, o.Sy = o.X+o.Width/2, o.Y+o.Height/2
+		o.ScaleY = 1
+	}
+	f := clock.Linear(o.Time, o.Time+30, t)
+	o.ScaleX = 1 + BounceFactor - BounceFactor*f
+	if f == 1 {
+		o.Time = 0
+		o.Action = fsm.ActionFunc(bodyBounceOut)
+	}
+}

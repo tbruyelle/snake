@@ -77,9 +77,15 @@ func NewSnake(x, y float32) *Snake {
 	}
 	p.Node(n, eng)
 
-	// The bdy
-	b := &fsm.Object{X: 0, Y: 0, Width: snakeW, Height: snakeH}
-	b.Sprite = texs[texSnakeHead]
+	// The body
+	b := &fsm.Object{
+		X:      0,
+		Y:      0,
+		Width:  snakeW,
+		Height: snakeH,
+		Sprite: texs[texSnakeHead],
+		Action: fsm.ActionFunc(bodyBounceOut),
+	}
 	b.Node(n, eng)
 	s.body = b
 	return s
