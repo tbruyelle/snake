@@ -146,12 +146,14 @@ func tongueShake(o *fsm.Object, t clock.Time) {
 	}
 }
 
+const PupilleMove = 3
+
 func pupilleLookLeft(o *fsm.Object, t clock.Time) {
 	if o.Time == 0 {
 		o.Time = t
 	}
 	f := clock.EaseIn(o.Time, o.Time+25, t)
-	o.Tx = -5 * f
+	o.Tx = -PupilleMove * f
 	if f == 1 {
 		o.Time = 0
 		o.X = o.X + o.Tx
@@ -168,7 +170,7 @@ func pupilleLookRight(o *fsm.Object, t clock.Time) {
 		o.Time = t
 	}
 	f := clock.EaseIn(o.Time, o.Time+25, t)
-	o.Tx = 5 * f
+	o.Tx = PupilleMove * f
 	if f == 1 {
 		o.Time = 0
 		o.X = o.X + o.Tx
@@ -180,32 +182,32 @@ func pupilleLookRight(o *fsm.Object, t clock.Time) {
 	}
 }
 
-const BounceFactor = 0.08
-
-func bodyBounceOut(o *fsm.Object, t clock.Time) {
-	if o.Time == 0 {
-		o.Time = t
-		o.Sx, o.Sy = o.X+o.Width/2, o.Y+o.Height/2
-		o.ScaleY = 1
-	}
-	f := clock.Linear(o.Time, o.Time+30, t)
-	o.ScaleX = 1 + BounceFactor*f
-	if f == 1 {
-		o.Time = 0
-		o.Action = fsm.ActionFunc(bodyBounceIn)
-	}
-}
+const BounceFactor = 0.15
 
 func bodyBounceIn(o *fsm.Object, t clock.Time) {
 	if o.Time == 0 {
 		o.Time = t
-		o.Sx, o.Sy = o.X+o.Width/2, o.Y+o.Height/2
+		o.Sx, o.Sy = o.X+snakeW/2, o.Y+snakeH/2
 		o.ScaleY = 1
 	}
-	f := clock.Linear(o.Time, o.Time+30, t)
-	o.ScaleX = 1 + BounceFactor - BounceFactor*f
+	f := clock.Linear(o.Time, o.Time+40, t)
+	o.ScaleX = 1 - BounceFactor*f
 	if f == 1 {
 		o.Time = 0
 		o.Action = fsm.ActionFunc(bodyBounceOut)
+	}
+}
+
+func bodyBounceOut(o *fsm.Object, t clock.Time) {
+	if o.Time == 0 {
+		o.Time = t
+		o.Sx, o.Sy = o.X+snakeW/2, o.Y+snakeH/2
+		o.ScaleY = 1
+	}
+	f := clock.Linear(o.Time, o.Time+40, t)
+	o.ScaleX = 1 - BounceFactor + BounceFactor*f
+	if f == 1 {
+		o.Time = 0
+		o.Action = fsm.ActionFunc(bodyBounceIn)
 	}
 }

@@ -54,15 +54,25 @@ func NewSnake(x, y float32) *Snake {
 	}
 	t.Node(n, eng)
 	s.tongue = t
+	// The body container
+	bc := &fsm.Object{
+		X:      0,
+		Y:      0,
+		Width:  1,
+		Height: 1,
+		Action: fsm.ActionFunc(bodyBounceOut),
+	}
+	bcNode := bc.Node(n, eng)
+
 	// The eye
 	e := &fsm.Object{
-		X:      54 * ratio,
+		X:      49 * ratio,
 		Y:      70 * ratio,
 		Width:  EyeW * ratio,
 		Height: EyeH * ratio,
 		Sprite: texs[texEye],
 	}
-	e.Node(n, eng)
+	e.Node(bcNode, eng)
 	// The pupille
 	p := &fsm.Object{
 		X:      64 * ratio,
@@ -75,7 +85,7 @@ func NewSnake(x, y float32) *Snake {
 			Next:  fsm.ActionFunc(pupilleLookLeft),
 		},
 	}
-	p.Node(n, eng)
+	p.Node(bcNode, eng)
 
 	// The body
 	b := &fsm.Object{
@@ -84,9 +94,8 @@ func NewSnake(x, y float32) *Snake {
 		Width:  snakeW,
 		Height: snakeH,
 		Sprite: texs[texSnakeHead],
-		Action: fsm.ActionFunc(bodyBounceOut),
 	}
-	b.Node(n, eng)
+	b.Node(bcNode, eng)
 	s.body = b
 	return s
 }
