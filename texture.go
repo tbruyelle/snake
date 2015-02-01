@@ -14,12 +14,16 @@ const (
 	texCherry
 	texApple
 	texTongue
+	texEye
+	texPupille
 
-	SnakeW, SnakeH   = 280, 184
-	QueueW, QueueH   = 138, 138
-	CherryW, CherryH = 84, 84
-	AppleW, AppleH   = 102, 88
-	TongueW, TongueH = 57, 47
+	SnakeW, SnakeH     = 280, 184
+	QueueW, QueueH     = 138, 138
+	CherryW, CherryH   = 84, 84
+	AppleW, AppleH     = 102, 88
+	TongueW, TongueH   = 57, 31
+	EyeW, EyeH         = 41, 26
+	PupilleW, PupilleH = 16, 18
 )
 
 func loadTextures() []sprite.SubTex {
@@ -42,6 +46,8 @@ func loadTextures() []sprite.SubTex {
 		texSnakeQueue: sprite.SubTex{t, image.Rect(278, 0, 278+QueueW, QueueH)},
 		texCherry:     sprite.SubTex{t, image.Rect(0, 189, CherryW, 189+CherryH)},
 		texApple:      sprite.SubTex{t, image.Rect(0, 273, AppleW, 273+AppleH)},
-		texTongue:     sprite.SubTex{t, image.Rect(0, 361, TongueW, 361+TongueH)},
+		texTongue:     sprite.SubTex{t, image.Rect(0, 367, TongueW, 367+TongueH)},
+		texEye:        sprite.SubTex{t, image.Rect(0, 403, EyeW, 403+EyeH)},
+		texPupille:    sprite.SubTex{t, image.Rect(66, 410, 66+PupilleW, 410+PupilleH)},
 	}
 }
