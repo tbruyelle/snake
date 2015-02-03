@@ -42,7 +42,7 @@ func NewSnake(x, y float32) *Snake {
 	s.Width = 1
 	s.Height = 1
 	s.Action = fsm.ActionFunc(snakeMove)
-	n := s.Node(scene, eng)
+	s.Register(scene, eng)
 	// The tongue
 	t := &fsm.Object{
 		X:      (25 + TongueW) * ratio,
@@ -52,7 +52,7 @@ func NewSnake(x, y float32) *Snake {
 		Sprite: texs[texTongue],
 		Action: fsm.ActionFunc(tongueOut),
 	}
-	t.Node(n, eng)
+	t.Register(&s.Object, eng)
 	s.tongue = t
 	// The body container
 	bc := &fsm.Object{
@@ -62,7 +62,7 @@ func NewSnake(x, y float32) *Snake {
 		Height: 1,
 		Action: fsm.ActionFunc(bodyBounceOut),
 	}
-	bcNode := bc.Node(n, eng)
+	bc.Register(&s.Object, eng)
 
 	// The eye
 	e := &fsm.Object{
@@ -72,7 +72,7 @@ func NewSnake(x, y float32) *Snake {
 		Height: EyeH * ratio,
 		Sprite: texs[texEye],
 	}
-	e.Node(bcNode, eng)
+	e.Register(bc, eng)
 	// The pupille
 	p := &fsm.Object{
 		X:      64 * ratio,
@@ -85,7 +85,7 @@ func NewSnake(x, y float32) *Snake {
 			Next:  fsm.ActionFunc(pupilleLookLeft),
 		},
 	}
-	p.Node(bcNode, eng)
+	p.Register(bc, eng)
 
 	// The body
 	b := &fsm.Object{
@@ -95,7 +95,7 @@ func NewSnake(x, y float32) *Snake {
 		Height: snakeH,
 		Sprite: texs[texSnakeHead],
 	}
-	b.Node(bcNode, eng)
+	b.Register(bc, eng)
 	s.body = b
 	return s
 }
@@ -109,7 +109,7 @@ func (s *Snake) Inc() {
 	q.Height = QueueH * ratio
 	q.Data = q
 	q.Action = fsm.ActionFunc(queueMove)
-	q.Node(scene, eng)
+	q.Register(scene, eng)
 	s.Size++
 }
 
@@ -135,7 +135,7 @@ func NewApple(x, y float32) *Apple {
 	c.Width = AppleW * ratio
 	c.Height = AppleH * ratio
 	c.Sprite = texs[texApple]
-	c.Node(scene, eng)
+	c.Register(scene, eng)
 	objs = append(objs, &c.Object)
 	return c
 }
@@ -147,7 +147,7 @@ func NewCherry(x, y float32) *Cherry {
 	c.Width = CherryW * ratio
 	c.Height = CherryH * ratio
 	c.Sprite = texs[texCherry]
-	c.Node(scene, eng)
+	c.Register(scene, eng)
 	objs = append(objs, &c.Object)
 	return c
 }

@@ -16,7 +16,6 @@ import (
 	"golang.org/x/mobile/app"
 	"golang.org/x/mobile/app/debug"
 	"golang.org/x/mobile/event"
-	"golang.org/x/mobile/f32"
 	"golang.org/x/mobile/geom"
 	"golang.org/x/mobile/gl"
 	"golang.org/x/mobile/sprite"
@@ -36,7 +35,7 @@ var (
 	lastClock = clock.Time(-1)
 
 	eng   = glsprite.Engine()
-	scene *sprite.Node
+	scene *fsm.Object
 	texs  []sprite.SubTex
 	snake *Snake
 	objs  Objs
@@ -79,7 +78,7 @@ func draw() {
 		}
 	}
 
-	eng.Render(scene, now)
+	eng.Render(scene.Node, now)
 	debug.DrawFPS()
 }
 
@@ -122,15 +121,14 @@ func loadScene() {
 	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 
 	texs = loadTextures()
-	scene = &sprite.Node{}
-	eng.Register(scene)
-	eng.SetTransform(scene, f32.Affine{
-		{1, 0, 0},
-		{0, 1, 0},
-	})
+	scene = &fsm.Object{Width: 1, Height: 1}
+	scene.Register(nil, eng)
 
 	// Background
-	bg := &fsm.Object{Width: float32(geom.Width), Height: float32(geom.Height)}
+	bg := &fsm.Object{
+		Width:  float32(geom.Width),
+		Height: float32(geom.Height),
+	}
 	w, h := int(geom.Width), int(geom.Height)
 
 	texbg, err := fsm.LoadColorTexture(eng, color.RGBA{237, 201, 175, 255}, w, h)
@@ -138,7 +136,7 @@ func loadScene() {
 		log.Fatal(err)
 	}
 	bg.Sprite = texbg
-	bg.Node(scene, eng)
+	bg.Register(scene, eng)
 
 	objs = make(Objs, 0)
 
