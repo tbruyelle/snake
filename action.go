@@ -146,40 +146,31 @@ func tongueShake(o *fsm.Object, t clock.Time) {
 	}
 }
 
-const PupilleMove = 3
+const (
+	PupilleMoveH = 3
+	PupilleMoveV = 2.4
+)
 
-func pupilleLookLeft(o *fsm.Object, t clock.Time) {
-	if o.Time == 0 {
-		o.Time = t
+func pupilleFollow(o *fsm.Object, t clock.Time) {
+	// Define the target
+	x, y := apple.X, apple.Y
+	// Compute vector from pupille to the target
+	vx, vy := x-snake.X, y-snake.Y
+	// Normalize the vector
+	length := float32(math.Sqrt(float64(vx*vx + vy*vy)))
+	vx, vy = vx/length, vy/length
+	// Apply snake direction
+	switch snake.Dir {
+	case Right:
+		vx, vy = -vx, -vy
+	case Up:
+		vx, vy = vy, -vx
+	case Down:
+		vx, vy = -vy, vx
 	}
-	f := clock.EaseIn(o.Time, o.Time+25, t)
-	o.Tx = -PupilleMove * f
-	if f == 1 {
-		o.Time = 0
-		o.X = o.X + o.Tx
-		o.Tx = 0
-		o.Action = &fsm.Wait{
-			Until: 35,
-			Next:  fsm.ActionFunc(pupilleLookRight),
-		}
-	}
-}
 
-func pupilleLookRight(o *fsm.Object, t clock.Time) {
-	if o.Time == 0 {
-		o.Time = t
-	}
-	f := clock.EaseIn(o.Time, o.Time+25, t)
-	o.Tx = PupilleMove * f
-	if f == 1 {
-		o.Time = 0
-		o.X = o.X + o.Tx
-		o.Tx = 0
-		o.Action = &fsm.Wait{
-			Until: 35,
-			Next:  fsm.ActionFunc(pupilleLookLeft),
-		}
-	}
+	// Compute the pupille movement
+	o.Tx, o.Ty = vx*PupilleMoveH, vy*PupilleMoveV
 }
 
 const BounceFactor = 0.15

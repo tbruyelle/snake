@@ -17,7 +17,7 @@ var (
 )
 
 func init() {
-	ratio = 0.5
+	ratio = 0.4
 	snakeW, snakeH = SnakeW*ratio, SnakeH*ratio
 }
 
@@ -82,7 +82,7 @@ func NewSnake(x, y float32) *Snake {
 		Sprite: texs[texPupille],
 		Action: fsm.Wait{
 			Until: 15,
-			Next:  fsm.ActionFunc(pupilleLookLeft),
+			Next:  fsm.ActionFunc(pupilleFollow),
 		},
 	}
 	p.Register(bc, eng)

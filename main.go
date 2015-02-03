@@ -39,6 +39,7 @@ var (
 	texs  []sprite.SubTex
 	snake *Snake
 	objs  Objs
+	apple *Apple
 )
 
 func main() {
@@ -86,7 +87,7 @@ func touch(t event.Touch) {
 	if t.Type == event.TouchEnd {
 		switch snake.Dir {
 		case Up, Down:
-			if t.Loc.X.Px() < snake.X {
+			if float32(t.Loc.X) < snake.X {
 				snake.Action = &snakeTurn{
 					dir: Left,
 				}
@@ -96,7 +97,7 @@ func touch(t event.Touch) {
 				}
 			}
 		case Left, Right:
-			if t.Loc.Y.Px() < snake.Y {
+			if float32(t.Loc.Y) < snake.Y {
 				snake.Action = &snakeTurn{
 					dir: Up,
 				}
@@ -107,13 +108,6 @@ func touch(t event.Touch) {
 			}
 		}
 	}
-}
-
-func newNode() *sprite.Node {
-	n := &sprite.Node{}
-	eng.Register(n)
-	scene.AppendChild(n)
-	return n
 }
 
 func loadScene() {
@@ -142,7 +136,7 @@ func loadScene() {
 
 	// a cherry
 	NewCherry(20, 40)
-	NewApple(100, 40)
+	apple = NewApple(150, 50)
 
 	// Snake
 	snake = NewSnake(float32(geom.Width/2), float32(geom.Height/2))
